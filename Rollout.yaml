@@ -1,0 +1,53 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: token-test-rollout
+spec:
+  replicas: null
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: token-test
+  template:
+    metadata:
+      labels:
+        app: token-test
+    spec:
+      containers:
+        - name: app
+          image: ssshukla1993/token-test:red
+          ports:
+            - containerPort: 5000
+          resources:
+            requests:
+              cpu: 20m
+              memory: 40Mi
+  strategy:
+    # blueGreen:
+    #   activeService: token-test-active-service
+    #   previewService: token-test-preview-service
+    #   autoPromotionEnabled: false
+    canary:
+      canaryService: token-test-preview-service
+      stableService: token-test-active-service
+      canaryMetadata:
+        labels:
+          state: canary
+      stableMetadata:
+        labels:
+          state: stable
+      maxUnavailable: 0
+      trafficRouting:
+        nginx:
+          stableIngress: token-test-ingress
+      steps:
+        - setWeight: 10
+        - pause: {}
+        - setCanaryScale:
+            weight: 30
+        - pause: {}
+        - setWeight: 50
+        - pause: {}
+        - setCanaryScale:
+            matchTrafficWeight: true
+        - pause: {}

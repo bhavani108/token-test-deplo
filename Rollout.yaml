@@ -30,7 +30,7 @@ spec:
         startingStep: 2 # delay starting analysis run until setWeight: 40%
         args:
         - name: service-name
-          value: guestbook-svc.default.svc.cluster.local
+          value: token-test-canary-service
       canaryService: token-test-preview-service
       stableService: token-test-active-service
       canaryMetadata:

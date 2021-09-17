@@ -1,61 +1,73 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
-metadata:
+metadata: 
   name: token-test-rollout
-spec:
-  replicas: null
+spec: 
+  replicas: ~
   revisionHistoryLimit: 2
-  selector:
-    matchLabels:
+  selector: 
+    matchLabels: 
       app: token-test
-  template:
-    metadata:
-      labels:
+  strategy: 
+    canary: 
+      analysis: 
+        args: 
+          - 
+            name: service-name
+            value: token-test-canary-service
+        startingStep: 2
+        templates: 
+          - 
+            templateName: success-rate
+      canaryMetadata: 
+        labels: 
+          state: canary
+      canaryService: token-test-preview-service
+      maxUnavailable: 0
+      stableMetadata: 
+        labels: 
+          state: stable
+      stableService: token-test-active-service
+      steps: 
+        - 
+          setCanaryScale: 
+            replicas: 1
+        - 
+          pause: {}
+        - 
+          setWeight: 5
+        - 
+          setCanaryScale: 
+            matchTrafficWeight: true
+        - 
+          pause: 
+            duration: 30s
+        - 
+          setWeight: 20
+        - 
+          pause: 
+            duration: 30s
+        - 
+          setWeight: 50
+        - 
+          pause: 
+            duration: 30s
+      trafficRouting: 
+        nginx: 
+          stableIngress: token-test-ingress
+  template: 
+    metadata: 
+      labels: 
         app: token-test
-    spec:
-      containers:
-        - name: app
-          image: token-service:attempt5
-          ports:
-            - containerPort: 8443
-          resources:
-            requests:
+    spec: 
+      containers: 
+        - 
+          image: "token-service:attempt5"
+          name: app
+          ports: 
+            - 
+              containerPort: 8443
+          resources: 
+            requests: 
               cpu: 20m
               memory: 40Mi
-  strategy:
-    canary:
-      analysis:
-        templates:
-        - templateName: success-rate
-        startingStep: 2 # delay starting analysis run until setWeight: 40%
-        args:
-         - name: service-name
-          value: token-test-canary-service
-         
-      canaryService: token-test-preview-service
-      stableService: token-test-active-service
-      canaryMetadata:
-        labels:
-          state: canary
-      stableMetadata:
-        labels:
-          state: stable
-      maxUnavailable: 0
-      trafficRouting:
-        nginx:
-          stableIngress: token-test-ingress
-      steps:
-        - setCanaryScale:
-            replicas: 1
-        - pause: {}
-        - setWeight: 5
-        - setCanaryScale:
-            matchTrafficWeight: true
-        - pause:
-            duration: 30s
-        - setWeight: 20
-        - pause:
-            duration: 30s
-        - setWeight: 50
-        - pause:
-            duration: 30s

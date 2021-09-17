@@ -19,7 +19,7 @@ spec:
         address: http://prometheus.example.com:9090
         query: avg by (pod_hash) (
               label_replace(
-                identity_authz_rpas_availability_metrics,
+                ,
                 "pod_hash",
                 "$1",
                 "pod",

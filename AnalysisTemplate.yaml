@@ -4,7 +4,9 @@ metadata:
   name: success-rate
 spec:
   args:
-  - name: service-name
+    - name: pod-hash
+    - name: app-name
+    - name: env
   metrics:
   - name: success-rate
     interval: 5m
@@ -15,10 +17,12 @@ spec:
     provider:
       prometheus:
         address: http://prometheus.example.com:9090
-        query: |
-          sum(irate(
-            istio_requests_total{reporter="source",destination_service=~"{{args.service-name}}",response_code!~"5.*"}[5m]
-          )) / 
-          sum(irate(
-            istio_requests_total{reporter="source",destination_service=~"{{args.service-name}}"}[5m]
-          ))
+        query: avg by (pod_hash) (
+              label_replace(
+                identity_authz_rpas_availability_metrics,
+                "pod_hash",
+                "$1",
+                "pod",
+                ".*-({{args.pod-hash}})-.*"
+              )
+            )

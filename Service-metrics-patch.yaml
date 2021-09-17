@@ -4,10 +4,10 @@ metadata:
   labels:
     iks-metric: actuator-prometheus
   name: service-metrics
- spec:
-    ports:
-    - name: iks-metric
+spec:
+  ports:
+  - name: iks-metric
     port: 8490
     targetPort: 8490
   selector:
-     app: token-test
+    app: token-test

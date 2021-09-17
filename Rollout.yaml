@@ -29,15 +29,9 @@ spec:
         - templateName: success-rate
         startingStep: 2 # delay starting analysis run until setWeight: 40%
         args:
-         - name: app-name
-              value: 
-         - name: env
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.labels['env']
-         - name: pod-hash
-              valueFrom:
-                podTemplateHashValue: Latest
+         - name: service-name
+          value: token-test-canary-service
+         
       canaryService: token-test-preview-service
       stableService: token-test-active-service
       canaryMetadata:

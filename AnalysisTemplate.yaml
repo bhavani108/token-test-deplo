@@ -16,7 +16,7 @@ spec:
     failureLimit: 3
     provider:
       prometheus:
-        address: http://prometheus.example.com:9090
+        address: http://prometheus.iks-system:9090
         query: avg by (pod_hash) (
               label_replace(
                 ,

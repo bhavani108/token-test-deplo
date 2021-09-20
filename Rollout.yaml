@@ -22,6 +22,21 @@ spec:
         labels: 
           state: stable
       stableService: token-test-active-service
+      analysis:
+        templates:
+        - templateName: success-rate
+        args:
+        - name: app-name
+          value: token-test
+        - name: pod-hash
+          valueFrom:
+            podTemplateHashValue: Latest
+
+       
+        - name: env
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['env']
       steps: 
         - 
           setCanaryScale: 

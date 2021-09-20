@@ -13,8 +13,8 @@ spec:
   strategy: 
     canary: 
       analysis: 
-        templates: 
-          - templateName: success-rate
+        templates:
+        - templateName: success-rate
            args:
             - name: app-name
               value: token-test

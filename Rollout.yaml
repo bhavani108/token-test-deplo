@@ -1,9 +1,11 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata: 
+  lables:
+    env: prf-usw2
   name: token-test-rollout
 spec: 
-  replicas: ~
+  replicas: null
   revisionHistoryLimit: 2
   selector: 
     matchLabels: 
@@ -11,14 +13,18 @@ spec:
   strategy: 
     canary: 
       analysis: 
-        args: 
-          - 
-            name: service-name
-            value: token-test-canary-service
-        startingStep: 2
         templates: 
-          - 
-            templateName: success-rate
+          - templateName: success-rate
+           args:
+            - name: app-name
+              value: token-test
+            - name: env
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['env']
+            - name: pod-hash
+              valueFrom:
+                podTemplateHashValue: Latest
       canaryMetadata: 
         labels: 
           state: canary

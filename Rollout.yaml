@@ -13,18 +13,6 @@ spec:
   strategy: 
     canary: 
       analysis: 
-        templates:
-        - templateName: success-rate
-           args:
-            - name: app-name
-              value: token-test
-            - name: env
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.labels['env']
-            - name: pod-hash
-              valueFrom:
-                podTemplateHashValue: Latest
       canaryMetadata: 
         labels: 
           state: canary

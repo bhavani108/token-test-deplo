@@ -18,7 +18,7 @@ spec:
         address: http://prometheus.iks-system:9090
         query: avg by (pod_hash) (
               label_replace(
-                ,
+               identity_privacy_token_availability_metrics,
                 "pod_hash",
                 "$1",
                 "pod",

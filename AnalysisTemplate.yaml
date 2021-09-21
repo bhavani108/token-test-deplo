@@ -15,7 +15,7 @@ spec:
     failureLimit: 3
     provider:
       prometheus:
-        address: http://127.0.0.1:9090/metrics
+        address: http://prometheus.iks-system:9090
         
         query: avg by (pod_hash) (
               label_replace(
